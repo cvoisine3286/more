@@ -8,5 +8,15 @@
         "scrapbook": "jc",
         "website": "https://jianminchen.com",
         "about": "Most people have trouble calling me by my actual name, so just call me Amanda! I discovered programming by accident when I found a book at my local library (in Brooklyn). I discovered Hack Club this spring (2022)."
+    },
+    {
+        "name": "Teddy Hartling",
+        "pronouns": "he/him",
+        "github": "uhTeddy",
+        "slack": "",
+        "slackhandle": "",
+        "scrapbook": "",
+        "website": "https://teddyhartling.com",
+        "about": "I'm the bad guy... duh"
     }
 ]
