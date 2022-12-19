@@ -19,7 +19,7 @@ export default function Nav({ generalBG, title, description }) {
                     backgroundImage: `linear-gradient(rgba(0,0,0,${shades[0]}), rgba(0,0,0,${shades[1]})), ''`
                 }}>
                 <Container sx={{ display: "flex" }}>
-                    <Link href="/">
+                    <Link href="https://cchs.hackclub.com">
                         <Image
                             src="https://assets.hackclub.com/flag-orpheus-top.svg"
                             alt="Hack Club flag"

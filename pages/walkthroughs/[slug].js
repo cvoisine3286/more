@@ -83,6 +83,10 @@ export const Styled = styled(BaseStyles)`
     .details-video video {
         max-width: 100%;
     }
+
+    video {
+        max-width: 100%;
+    }
 `;
 
 export default function Walkthrough({ generalBG, slug, title, date }) {

@@ -3,20 +3,825 @@ date: 2022-12-19
 title: Building a holiday card together!
 ---
 
-As the Co-Creator of the Dorman Hack Club, I have been thoroughly impressed by the district's commitment to educating students in STEM-related fields. Our Chromebooks, internet connection, course offerings, and facilities have allowed our members to excel in our weekly Hack Club meetings.
+Here's what the final card will look like:
 
-You may be unfamiliar with Hack Club, the international network of clubs we are a member of. To learn more about Hack Club, visit the [Hack Club website](https://hackclub.com/) to discover how Hack Club empowers students to discover the joy of coding through building projects.
+<video controls>
+    <source src="/images/holiday-card/holiday-card.mp4" type="video/mp4" />
+</video>
 
-Dorman Hack Club members are ready to begin collaborating on their projects, and the industry standard to support this sort of collaboration is [GitHub](https://github.com/), a development tool maintained by [Microsoft](https://www.microsoft.com/). GitHub allows developers to securely store their code and push updates to collaborative projects.
+So cool! Of course, it's pretty hard to build this in one meeting solo, so we're going to work as a team and do different portions.
 
-Currently, GitHub is blocked on school-issued Chromebooks, and we at the Dorman Hack Club request that you reconsider the blocking of GitHub to allow students to collaboratively build their projects and securely store their code.
+First up, let's take a look at the starting boilerplate, which is located at [https://replit.com/join/nuqgyrurbt-jianmin-chen](https://replit.com/join/nuqgyrurbt-jianmin-chen). You should be invited to edit the code; if not, let me know.
 
-Additionally, we ask that the district allow students to use Replit, an online coding environment compatible with school-issued Chromebooks. This editor will enable students to develop in nearly every commonly used language from the safety of their web browser.
+## Exploring the boilerplate
 
-We also recently noticed that the District blocked the inspect panel within Chrome on school-issued Chromebooks. Allowing the inspect menu would be helpful in allowing students to understand how websites are built and to debug their own websites.
+First let's take a look at the boilerplate. It has a couple of files:
 
-Thank you so much for your support of the Dorman Hack Club, and we hope to hear back from you soon regarding how the district will support Dorman Hack Club's missions to help students discover the joy of coding by creating, shipping (a.k.a launching), and sharing their projects. Finally, I've attached a letter from Leo McElroy at Hack Club HQ
+-   `index.html`, the HTML file
+-   `index.css`, the styles for our HTML file
+-   `index.js`, the JavaScript (it makes the page interactive, like the fireworks you see)
+-   `/fonts` contains some fonts for our card
 
-Sincerely,
+`index.html` looks like this:
 
-Thomas Stubblefield, Dorman Hack Club Co-Creator
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <base target="_blank" />
+        <meta charset="utf-8" />
+
+        <title>Holiday Card | CCHS Hack Club</title>
+
+        <link href="./index.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/tsparticles-preset-fireworks@2/tsparticles.preset.fireworks.bundle.min.js"></script>
+        <script src="./index.js"></script>
+    </head>
+    <body>
+        <div id="options">
+            <!-- Buttons in the bottom right corner -->
+        </div>
+        <div id="toasts">
+            <!-- Toasts (notifications) in the bottom left corner -->
+        </div>
+        <div id="card">
+            <!-- Card -->
+            <div id="card-inner">
+                <!-- Card content -->
+                <div id="front">
+                    <!-- Front of card -->
+                </div>
+                <div id="back">
+                    <!-- Back of card -->
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+```
+
+In the `head`, we link to our stylesheet and our script file. We also link to [`tsparticles`](https://particles.js.org/), a library (code written by other people) that allows us to create our fireworks. This makes the fireworks a million times easier to create, as you'll see later.
+
+Inside our body, we have a bunch of `<div>`s. In case you forgot what a `<div>` is, it's basically sort for "section". So we have different sections:
+
+```
+options
+toasts
+card
+    card-inner
+        front
+        back
+```
+
+You'll notice we have a lot of `id="..."`. IRL, an ID is a unique identifier. This is the same in HTML - we use `id` to describe each `<div>`.
+
+Now let's look at the CSS:
+
+```css
+@font-face {
+    font-family: "Better Yesterday";
+    src: url("./fonts/BetterYesterday.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "Better Yesterday";
+    font-style: italic;
+    src: url("./fonts/BetterYesterdayItalic.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "Inter";
+    font-weight: 200 900;
+    src: url("./fonts/Inter.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Inter Tight";
+    font-weight: 200 900;
+    src: url("./fonts/InterTight.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Staatliches";
+    src: url("./fonts/Staatliches.ttf") format("truetype");
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    background-color: #e9e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    height: 100%;
+}
+
+#card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    width: 90vw;
+    height: 90vh;
+    overflow: auto;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+```
+
+All the `font-face` code basically sets up the fonts to get ready for use. We have a couple of fonts:
+
+-   Better Yesterday and Better Yesterday Italic for cursive text
+-   Inter and Inter Tight for the letter text
+-   Staatliches for the "Happy Holidays! 2022" text
+
+Then, we have `body, html {...}`. This sets styles for the `body` and `html` tag inside the HTML file. We:
+
+-   Change the background color
+-   Set `display: flex`, which just means that everything will be determined by columns
+    -   This allows us to use `align-items: center;` and `justify-content: center`, which moves our card to the middle of the screen
+-   Set margin to 0, so that the entire screen is covered with the background color
+-   Set `overflow: hidden` and `height: 100%`, which just means that if the content goes beyond the screen size, then it will be hidden
+-   Set padding to 0, so that there is no extra spacing for content inside
+
+When you think about margin and padding, think about a box, with each HTML tag being a tag. Margin is the outside of the box, border is the box itself, padding is the foam padding inside the box, and the children of the tag (any tags inside the tag) is the stuff inside the box.
+
+`index.js` is very short:
+
+```javascript
+window.onload = () => {
+    // Run code on load
+};
+```
+
+## Step One
+
+Everything is divided by section! Decide what makes sense. Some things you can do at the same time, other times you guys will have to work together step by step.
+
+### Add buttons in bottom right corner
+
+Adding buttons is very easy. First, inside `<div id="options">`, we going to add the actual buttons:
+
+```html
+<div id="options">
+    <button class="option-button" id="share-button" title="Share card">
+        <svg
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            stroke-linejoin="round"
+            stroke-miterlimit="1.414"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-label="share"
+            viewBox="0 0 32 32"
+            preserveAspectRatio="xMidYMid meet"
+            fill="currentColor"
+            width="32"
+            height="32"
+            title="share">
+            <g fill-rule="nonzero">
+                <path
+                    d="M16.707,5.294c-0.39,-0.39 -1.024,-0.39 -1.414,0l-3,3c-0.391,0.391 -0.391,1.024 0,1.415c0.39,0.39 1.024,0.39 1.414,0l1.293,-1.293l0,9.585c0,0.553 0.448,1 1,1c0.552,0 1,-0.447 1,-1l0,-9.585l1.293,1.293c0.39,0.39 1.024,0.39 1.414,0c0.391,-0.391 0.391,-1.024 0,-1.415l-3,-3Zm-5.817,7.023c0.588,-0.114 1.11,0.36 1.11,0.959l0,0.426c0,0.265 -0.198,0.487 -0.459,0.531l-0.002,0c-1.042,0.17 -1.486,0.416 -1.706,0.612c-0.191,0.171 -0.42,0.489 -0.588,1.31l-0.007,0.03c-0.191,0.926 -0.238,2.106 -0.238,3.815l0,0.003c0,1.709 0.047,2.889 0.238,3.814l0.007,0.031c0.168,0.821 0.397,1.139 0.588,1.309c0.219,0.197 0.662,0.442 1.699,0.612l0.017,0.002c1.094,0.182 2.493,0.231 4.45,0.23l0.002,0c1.957,0.001 3.356,-0.048 4.45,-0.23l0.017,-0.002c1.037,-0.17 1.48,-0.415 1.699,-0.611c0.191,-0.171 0.42,-0.489 0.588,-1.31l0.007,-0.031c0.191,-0.925 0.238,-2.105 0.238,-3.814l0,-0.003c0,-1.709 -0.047,-2.889 -0.238,-3.815l-0.007,-0.03c-0.168,-0.821 -0.397,-1.139 -0.588,-1.31c-0.22,-0.196 -0.664,-0.442 -1.706,-0.612l-0.002,0c-0.262,-0.044 -0.459,-0.266 -0.459,-0.531l0,-0.426c0,-0.599 0.522,-1.073 1.11,-0.959c3.362,0.655 3.89,2.553 3.89,7.684c0,7.059 -1,8 -9,8c-8,0 -9,-0.941 -9,-8c0,-5.131 0.528,-7.029 3.89,-7.684Z"></path>
+            </g>
+        </svg>
+    </button>
+    <button class="option-button" id="flip-button" title="Flip card">
+        <svg
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            stroke-linejoin="round"
+            stroke-miterlimit="1.414"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-label="reply"
+            viewBox="0 0 32 32"
+            preserveAspectRatio="xMidYMid meet"
+            fill="currentColor"
+            width="32"
+            height="32"
+            title="reply">
+            <path
+                d="M 5.8902 8.70774C 6.31445 9.0613 6.3718 9.69185 6.01822 10.1161C 5.66464 10.5404 5.03409 10.5977 4.6098 10.2442L 4.60855 10.2431C 3 9.22597 2 8.22597 0.40863 6.27944C 0.19043 5.96819 0 5.61611 0 5.22594C 0 4.83579 0.19043 4.48371 0.40863 4.17246C 2 2.22597 3 1.22597 4.60944 0.20804C 5.0762 -0.0871717 5.66464 -0.0885144 6.01822 0.335756C 6.3718 0.760027 6.31445 1.3906 5.8902 1.74416L 5.72845 1.87903C 4.58041 2.83635 3.8909 3.41132 3.07352 4.22597L 16 4.22597C 18.7614 4.22597 21 6.46454 21 9.22597C 21 11.9874 18.7614 14.226 16 14.226L 12 14.226C 11.4477 14.226 11 13.7783 11 13.226C 11 12.6737 11.4477 12.226 12 12.226L 16 12.226C 17.6569 12.226 19 10.8828 19 9.22597C 19 7.56911 17.6569 6.22597 16 6.22597L 3.07495 6.22597C 3.87918 7.02567 4.56436 7.59874 5.64545 8.50295L 5.8902 8.70774Z"
+                transform="translate(6 9)"></path>
+        </svg>
+    </button>
+</div>
+```
+
+We have two buttons. One button is the share button, and the other is the flip button. The `svg` inside these buttons are just images. [SVG](https://www.adobe.com/creativecloud/file-types/image/vector/svg-file.html) is just another image format, like JPG or PNG.
+
+Now we need to style these buttons with CSS to get them in the bottom right corner. First, we're going to move `<div id="options">` to the bottom right corner:
+
+```css
+#options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+```
+
+`position: fixed` makes the location of the `<div>` fixed in one spot, which is 10 pixels from the very bottom and 10px from the very right (`bottom: 10px` and `right: 10px`). The other three lines:
+
+```css
+display: flex;
+flex-direction: column;
+gap: 8px;
+```
+
+Set the display to `flex` and the `flex-direction` to `column`, which just means that the buttons will be below one another, with a `gap` or spacing of 8 pixels between them.
+
+Now we can style the individual buttons:
+
+```css
+.option-button {
+    background-color: white;
+    color: gray;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+}
+
+.option-button:hover {
+    color: black;
+}
+```
+
+If you look at the HTML, you'll notice that each of the buttons, in addition to an `id=""`, have a `class="option-button"`. So while `id` is a unique identifier for each HTML element, **`class` describes the classes that an element belongs to**. In this case, both buttons have the class `option-button`, so they'll both have the same styles. The class selector is `.` (vs. `#` for `id`). If we didn't do it like this, we would have to write the same code... twice.
+
+Now let's actually look at the styles.
+
+-   We set the background color to white, and the text color to gray.
+-   We set a shadow of `0 4px 8px 0 rgba(0, 0, 0, 0.1)`. The first four values, `0 4px 8px 0` describe the top, right, bottom, left shadow sizes, respectively. The last value, `rgba(0, 0, 0, 0.1)`, is the color of the shadow. Color normally is a word, or a hex value (e.g., `#343535`, which uses [hexadecimal](https://learn.sparkfun.com/tutorials/hexadecimal/all)), or a RGB value (e.g., `rgb(255, 255, 255)` where `rgb(red, green, blue)` is
+
+Awesome! Now the buttons should work; when you open the page in a new tab, they should appear in the bottom right corner.
+
+### Make toasts work
+
+For now, let's style the toasts. Here's the HTML for the toasts:
+
+```html
+<div id="toasts">
+    <div class="toast">
+        <p>Copied to clipboard</p>
+    </div>
+</div>
+```
+
+So you'll notice that there's an `<div id="toasts">` surrounding the toasts. We can style this first so it appears in the bottom left corner:
+
+```css
+#toasts {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 999;
+    width: 100%;
+}
+```
+
+Once again, we see `position: fixed` and `bottom: 10px` and `left: 10px`. This just ensures that the `div` is in the bottom left corner, 10 pixels from the very bottom and 10 pixels from the very left.
+
+Then, we have `width: 100%`, making the width of the `div` as wide as possible (so text is on one line if possible). We also have `z-index: 999`, which just means that the `div` is going to be above everything else (it won't disappear underneath another `div`).
+
+Now let's style the toast. Here, we'll use a **class** - a set of styles. Why? Because we will have more than one toast; imagine the user clicks the share button and submits the signature form at the same time. So we want to create a set of styles that can be reused:
+
+```css
+.toast {
+    opacity: 0.9;
+    background-color: #fffaf4;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    font-family: "Inter Tight";
+    font-size: 0.995rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 0.1rem 1rem;
+}
+```
+
+-   `opacity: 0.9` sets the opacity of the toast to 0.9, where 0 makes it invisible and 1 makes it fully visible.
+-   `background-color: #fffaf4` sets the background color to #fffaf4, which is a hex value (hexadecimal color). It's a light beige kind of color.
+-   `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1)` sets a shadow
+
+And now you should see a toast appear in the bottom left corner with the text "Copied to clipboard"! We would also like to add a cool animation, where it slides up, waits a couple of moments, and then disappear. CSS lets us do this with [CSS animations](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations). The code to style the toast ends up looking like this:
+
+```css
+@keyframes slide-up {
+    0% {
+        bottom: -100px;
+    }
+    20% {
+        bottom: 2px;
+    }
+    30% {
+        bottom: 5px;
+    }
+    40% {
+        bottom: 2px;
+    }
+    50% {
+        bottom: 2px;
+    }
+    60% {
+        bottom: 2px;
+    }
+    70% {
+        bottom: 2px;
+    }
+    80% {
+        bottom: 2px;
+    }
+    90% {
+        bottom: 2px;
+    }
+    100% {
+        bottom: -100px;
+    }
+}
+
+.toast {
+    animation: slide-up 3s ease-in-out forwards;
+    opacity: 0.9;
+    background-color: #fffaf4;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    font-family: "Inter Tight";
+    font-size: 0.995rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 0.1rem 1rem;
+}
+```
+
+Here we have a couple of new things.
+
+### Front of the card
+
+For now, the front of the card is going to be pretty basic. Let's just add some text to it:
+
+```html
+<div id="front">
+    <div id="front-content">
+        <div id="happy-holidays">
+            <h1>Happy Holidays!</h1>
+            <h3>2022</h3>
+        </div>
+    </div>
+</div>
+```
+
+Inside `<div id="front">`, we create another `<div id="front-content">`, which holds a `<div id="happy-holidays">` which has the actual happy holidays text. Here's how we style it:
+
+```css
+#happy-holidays {
+    color: #fffaf4;
+    font-family: "Staatliches", sans-serif;
+    font-size: 4rem;
+    padding: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    text-transform: uppercase;
+}
+
+#happy-holidays h1,
+#happy-holidays h3 {
+    line-height: 0.8;
+    margin: 0;
+}
+```
+
+### Make card flip when user clicks button
+
+```css
+#card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+#front,
+#back {
+    background-color: #fffaf4;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    z-index: 999;
+}
+
+#back {
+    display: flex;
+    transform: rotateY(180deg);
+}
+
+#back > div {
+    flex-basis: 50%;
+    overflow: auto;
+}
+```
+
+```js
+document.getElementById("flip-button").addEventListener("click", () => {
+    if (
+        document.getElementById("card-inner").style.transform ===
+        "rotateY(180deg)"
+    )
+        document.getElementById("card-inner").style.transform = "";
+    else
+        document.getElementById("card-inner").style.transform =
+            "rotateY(180deg)";
+});
+```
+
+### Back of the card: Left side
+
+```html
+<div id="message">
+    <a href="https://cchs.hackclub.com" target="_blank">
+        <img
+            style="width: 200px"
+            src="https://assets.hackclub.com/flag-orpheus-top.svg" />
+    </a>
+    <div class="prose">
+        <p>
+            At most schools, clubs are required to have an adult advisor
+            (usually an employee at the school) to manage the paperwork for the
+            club, help find a space for it, and supervise meetings. This person
+            should have a good relationship with your school's administration;
+            if something goes wrong, they'll be the one to back you up.
+        </p>
+        <p>
+            To start, it's best to look for people who are interested in
+            programming and teaching it to students. This may include CS
+            teachers, IT admins (this connection can be really handy when trying
+            to access blocked sites for your club meetings), and teachers of
+            tech-related classes. You may also be interested in talking to
+            people in your school's math or science departments, or even any
+            non-STEM teacher who you like. It shouldn't be required for your
+            advisor to have programming experience as long your club is totally
+            student-run.
+        </p>
+        <p>
+            As a last resort, one option could also be to reach out to
+            individuals outside your school, if your school allows for them to
+            supervise clubs. This is what I ended up doing, but in order to get
+            approved by your school district, you may need to find someone who
+            works at your school to formally submit an application.
+        </p>
+    </div>
+</div>
+```
+
+```css
+#message .prose {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 1.5rem;
+    padding: 0rem 3rem 1rem 3rem;
+}
+```
+
+### Back of the card: Right side text
+
+```html
+<div id="info">
+    <div id="signatures"></div>
+    <div id="to">
+        <h1>
+            <span class="prefix" style="font-size: 1.5rem">TO:</span>
+            You!
+        </h1>
+        <hr />
+        <hr />
+        <hr />
+    </div>
+</div>
+```
+
+```css
+#info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: "Better Yesterday", cursive;
+    font-size: 3rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    border-left: 1px solid;
+}
+
+#info h1 {
+    border-bottom: 1px solid;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+#signatures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+#signatures p {
+    line-height: 0;
+    margin-bottom: 0;
+}
+
+.prefix {
+    color: gray;
+    font-family: "Staatliches";
+    font-size: 1.5rem;
+}
+```
+
+### Back of the card: Signature form
+
+Okay, let's add the signature form after the "To: You" text. Here'
+
+```html
+<form id="sign">
+    <input
+        autocomplete="off"
+        type="text"
+        name="name"
+        placeholder="Sign this card!"
+        required />
+    <button type="submit">Sign!</button>
+</form>
+```
+
+```css
+#sign {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    font-family: "Inter", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 7px 7px 7px 14px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: -1px;
+}
+
+#sign input {
+    background-color: transparent;
+    border: none;
+    color: black;
+    letter-spacing: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    outline: none;
+}
+
+#sign button {
+    background-color: #67c6b6;
+    border: none;
+    border-radius: 20px;
+    color: #fffaf4;
+    letter-spacing: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 7px 35px;
+    cursor: pointer;
+}
+```
+
+## Step Two
+
+### Add fireworks
+
+Earlier, I mentioned that someone else already wrote the code for us when it comes to the fireworks. In programming, we typically package our code into libraries, so that everyone can use them. In our case, we're using a package called [`ts-particles`](https://particles.js.org/). All we need to get the fireworks to work is to add a `<div id="tsparticles">` to our HTML, obviously on the front of the card:
+
+```html
+<div id="front">
+    <div id="front-content">
+        <div id="happy-holidays">
+            <h1>Happy Holidays!</h1>
+            <h3>2022</h3>
+        </div>
+        <div id="tsparticles"></div>
+    </div>
+</div>
+```
+
+Now in our JavaScript, at the top of `window.onload`, we can run the following code:
+
+```javascript
+tsParticles.load("tsparticles", {
+    preset: "fireworks"
+});
+```
+
+The library gives us a variable called `tsParticles`, which let's us `load` a preset. In our case, the preset is fireworks, but they have a bunch of other cool [ones](https://particles.js.org/samples/index.html) you can check out.
+
+And now the fireworks should work! How cool is that?
+
+### Create toasts on the fly
+
+Now that we have the CSS for toasts working, we want to be able to generate toasts on the fly:
+
+-   When the user clicks on the share button, we want a toast to pop up that says "Copied to clipboard"
+-   When the user submits the signature form, we want a toast to pop up that says "Awesome! Now send this card off to someone!"
+
+Let's write a **function** - a block of code - to create a toast. It will look like this, at the top of the file:
+
+```javascript
+const createNewToast = msg => {
+    let toast = document.createElement("div");
+    toast.classList.add("toast");
+    toast.innerHTML = `<p>${msg}</p>`;
+    document.getElementById("toasts").appendChild(toast);
+};
+```
+
+So there's a couple of things to note. First, note that you've probably seen `() => {}` to describe a function, but now we're using `msg => {}`. This just means that the function will take a **argument** called `msg` that holds some text that is going to be the message. Inside the function, we:
+
+-   Use `let toast = document.createElement("div");` to create a `<div>` element. `toast` is how we're going to refer to this element.
+-   We add a class (a set of styles in CSS) called `.toast`. These are the styles we wrote before, in Step One.
+
+*   We set the HTML inside the `<div>` to a paragraph tag. The text inside the paragraph tag is `msg`, which is done using `${msg}`. (In fact, this is why we use backticks instead of `""` marks - so that we can include data inside the text.)
+*   Finally, we add the toast to `<div id="toasts">`. CSS takes care of the sliding up and disappearing animation, as we saw before.
+
+And now, toasts should work! Let's try it out.
+
+### Get share button working
+
+Getting the share button working is quite easy. These lines of code need to be added to the bottom of the code inside `window.onload`:
+
+```javascript
+document.getElementById("share-button").addEventListener("click", () => {
+    navigator.clipboard.writeText("https://holiday2022.cchs.hackclub.com");
+    createNewToast("Copied to clipboard");
+});
+```
+
+First, we get the `<button id="share-button">`, which you'll notice we created before in Step One. Then, we add an **event listener** to it that checks when the button is clicked. When it's click, we run a function (the `() => {}`) that does two things:
+
+1. `navigator.clipboard.writeText("https://holiday2022.cchs.hackclub.com");` copies the link, `https://holiday2022.cchs.hackclub.com`, to the clipboard.
+2. `createNewToast("Copied to clipboard")` creates a new toast using the function that we created before, with the message/text inside the toast being "Copied to clipboard".
+
+### Get the form working
+
+Now let's get the form working! To do this, we'll need to write some JavaScript. Let's open up `index.js`.
+
+There are two parts:
+
+1. Getting the signatures when the page loads
+2. Uploading a signature when the user fits out the form
+
+Let's deal with #1 first. To do it, we're going to write a **function** - a block of code. It will look like this, at the top of the file:
+
+```javascript
+const getSignatures = () => {
+    document.getElementById("signatures").innerHTML = "";
+    fetch("https://www.jianminchen.com/api/various/holiday2022")
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                const signaturesContainer =
+                    document.getElementById("signatures");
+                for (let signature of json.signatures) {
+                    let p = document.createElement("p");
+                    p.innerText = signature;
+                    p.style.transform = `rotate(${Math.floor(
+                        Math.random() * (15 - -15 + 1) - 15
+                    )}deg)`;
+                    signaturesContainer.appendChild(p);
+                }
+            }
+        });
+};
+```
+
+Let's go through this line by line. Our block of code is called `getSignatures`. Inside it, we get the `<div>` with `id="signatures"`, which basically holds all the signatures, and clear it out by setting the HTML inside it to empty.
+
+Then, we have `fetch("https://www.jianminchen.com/api/various/holiday2022")`. This gets the data at that link. In fact, if you open [https://www.jianminchen.com/api/various/holiday2022](https://www.jianminchen.com/api/various/holiday2022) (try it out!), you get something like this:
+
+```json
+{
+    "success": true,
+    "signatures": ["Amanda", "Test"]
+}
+```
+
+This is JSON - do you remember it from the [intro walkthrough](/walkthroughs/newcomer.mdx)? We have two items: `success` and `signatures`.
+
+-   `success`: If this is `true`, then the website request was successful.
+-   `signatures`: This is a list, as represented by the `[]`s. It's a list of signatures/names.
+
+However this is actually just text. For it to become JSON, we have to run `.then(res => res.json())`, which converts the result into JSON.
+
+Once we have the JSON, we can check if `json.success` is `true`. `if (json.success)` is short for `if (json.success === true)` (`===` is the equal to operator).
+
+If the request was successful, we're going to get `<div id="signatures">` again. Then, we're going to go through every signature inside `json.signatures` with `for (let signature of json.signatures)`, which is a `for` loop and goes through each item in a list, with `signature` being the current signature. For each signature:
+
+-   We use `let p = document.createElement("p")` to create a `p` tag.
+-   We use `p.innerText = signature` to change the text inside the `p` tag to the current signature.
+-   We use <code>p.style.transform = `rotate(${Math.floor(Math.random() * (15 - -15 + 1) - 15)}deg)`;</code> to rotate the signature randomly. This is equal to `transform: rotate()` in CSS, but we are doing it with JavaScript, using [random number generation](https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript) to generate a degree between -15 and 15. This makes the signatures uniquely rotated everytime you refresh the page!
+
+Finally, we add the current signature to `<div id="signatures">`, so it actually shows up.
+
+Of course, _this is just a block of code, so we need to "call" it for it to actually run_. Let's add this to the top of the code inside `window.onload`:
+
+```javascript
+getSignatures();
+```
+
+Notice that this is the name of the function.
+
+And now the current signatures should show up! Now let's deal with #2: uploading a signature when the user fills out the form. This code goes in `window.onload` at the bottom:
+
+```javascript
+document.getElementById("sign").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = event.target.name.value;
+    if (!name) createNewToast("Please enter a name!");
+    else {
+        // Upload name to database
+        fetch("https://www.jianminchen.com/api/various/holiday2022", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name })
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.error) createNewToast(json.error);
+                else {
+                    getSignatures();
+                    createNewToast(
+                        "Awesome! Now send this card off to someone!"
+                    );
+                }
+            })
+            .catch(err => createNewToast(err));
+    }
+});
+```
+
+Here, we're getting `<div id="sign">`, and adding an event listener to check when it's submitted. When it gets submitted, we're going to use `event.preventDefault()` to prevent the default event from happening (which is that the page gets reloaded). Then, we get the name using `const name = event.target.name.value`. If you look at the `input` element we created before for entering the name, you'll notice that it has a `name="name"`. This allows us to use `event.target.name.value`, which gets the form input that has `name="name"` and its value.
+
+If the user didn't put in a name, we let them know by creating a toast with "Please enter a name!"
+
+Otherwise, if the user did upload a name, we can upload the name to the database. Like before, we're using `fetch("https://www.jianminchen.com/api/various/holiday2022")`, but this time, we're passing in the form data using:
+
+```javascript
+{
+    method: "POST",
+    headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name })
+}
+```
+
+This is also JSON. The method we use to upload to the database is `POST`. When we asked for the names, we used a `GET` request. When we upload, we use a `POST` request. This is explained more in detail [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
+
+We also pass some headers. These are a bit confusing, so I won't get into it too much, but just know that it describes the passed data as JSON.
+
+Finally, the body, or content that is passed, is just the name. When we transfer data, everything has to be text, so we use JSON.stringify to convert the JSON, which is `{ name }` (sort for `{ name: name }`), into text.
+
+Once we pass this data, we wait for a response. When we get a response, we convert it to JSON like we did before. But instead of checking if `json.success === true`, we check if `json.error === true`. If it is true, that means there was an error, so we'll create a new toast that tells the user the error message. Otherwise, we can refresh the signatures on the card so the user can see their signature, and also create a toast telling them to send the card to someone.
+
+That's all! Now you can sign the card, which is super cool.
+
+## Conclusion
+
+Wooh, now everything should work! Try clicking on "Run" and opening the site in a new tab. You should get the same result as the video.
+
+-   If something is not working: right click on the page > Inspect > Console, which will tell you if any errors happened. Try and figure out what's wrong; if you need help, call me!
+-   If something is not styled right, try and figure out why, before calling me.
+
+### Emailing
+
+**Note: Once we've got the card working, I'm going to deploy it to [holiday2022.cchs.hackclub.com](https://holiday2022.cchs.hackclub.com), and then you guys can send the link to people.**
+
+Now for the fun part: let's send this card off to some people! Email the link to some people you want to send a card to, and ask them to sign the form and then share the card with someone else. Theoretically, if everybody shares the card with someone else, the signatures will keep growing!
+
+### What we haven't done
+
+There are always things to add. For me, one of the biggest things is [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries), which is CSS that changes depending on the size and kind of device you're on. If you look at this card on a phone, it's probably going to look weird, but that's because we haven't written any media queries yet.
+
+-   Music
+-   Snowflake animations
