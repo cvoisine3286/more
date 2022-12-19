@@ -262,7 +262,15 @@ If you look at the HTML, you'll notice that each of the buttons, in addition to 
 Now let's actually look at the styles.
 
 -   We set the background color to white, and the text color to gray.
--   We set a shadow of `0 4px 8px 0 rgba(0, 0, 0, 0.1)`. The first four values, `0 4px 8px 0` describe the top, right, bottom, left shadow sizes, respectively. The last value, `rgba(0, 0, 0, 0.1)`, is the color of the shadow. Color normally is a word, or a hex value (e.g., `#343535`, which uses [hexadecimal](https://learn.sparkfun.com/tutorials/hexadecimal/all)), or a RGB value (e.g., `rgb(255, 255, 255)` where `rgb(red, green, blue)` is
+-   We set a shadow of `0 4px 8px 0 rgba(0, 0, 0, 0.1)`. The first four values, `0 4px 8px 0` describe the top, right, bottom, left shadow sizes, respectively. The last value, `rgba(0, 0, 0, 0.1)`, is the color of the shadow. Color normally is a word, or a hex value (e.g., `#343535`, which uses [hexadecimal](https://learn.sparkfun.com/tutorials/hexadecimal/all)), or a RGB value (e.g., `rgb(255, 255, 255) = rgb(red, green, blue)` where `red`, `green`, and `blue` all have a max value of 255). In this case, we're using a RGBA value, short for red, green, blue, and alpha (opacity).
+
+*   We set `border: none` to remove the border that comes by default with buttons. We also set `border-radius: 50%`, which basically makes the button round.
+*   `cursor: pointer` changes the cursor when you hover over the button.
+*   We set `width` and `height` to 40 pixels.
+*   We set `display: flex`, `align-items: center`, and `justify-content: center` so that the SVG icon is in the middle of the button.
+*   Finally, we set `transition: all 0.1s`, which means that any changes to the style will happen over 0.1 seconds.
+
+This last part is useful because we also include styles for when we hover over the button (`.option-button:hover`). When the user hovers over the button, the text color changes from gray to black. `transition` makes this seem smooth because it's not an instant change, it takes 0.1 seconds to change.
 
 Awesome! Now the buttons should work; when you open the page in a new tab, they should appear in the bottom right corner.
 
@@ -312,7 +320,11 @@ Now let's style the toast. Here, we'll use a **class** - a set of styles. Why? B
 
 -   `opacity: 0.9` sets the opacity of the toast to 0.9, where 0 makes it invisible and 1 makes it fully visible.
 -   `background-color: #fffaf4` sets the background color to #fffaf4, which is a hex value (hexadecimal color). It's a light beige kind of color.
--   `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1)` sets a shadow
+-   `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1)` sets a shadow on the toast. The first four values are the top, right, bottom, and left sizes of the shadow, respectively. The last value is the color of the shadow in RGBA (red, green, blue, and alpha - opacity; check the option buttons section for more info).
+
+*   We set `font-family: "Inter Tight"` and `font-size: 0.995rem;`, which basically sets the font of the text and the size. `rem` is a [measurement](https://www.sitepoint.com/understanding-and-using-rem-units-in-css/) used in CSS just like `px` - the only difference is that instead of measuring pixels on the screen, it uses the browser default ro calculate the size (if the browser default font size is 16px, then `1rem = 16px`.)
+*   We also set `position: absolute`, `bottom: 0`, and `left: 0`. This means that the toast is at the very bottom and left of `<div id="toasts">`.
+*   Finally, we add some padding with `padding: 0.1rem 1rem`. The first value, `0.1rem`, is the top and bottom padding. `1rem` is the left and right padding.
 
 And now you should see a toast appear in the bottom left corner with the text "Copied to clipboard"! We would also like to add a cool animation, where it slides up, waits a couple of moments, and then disappear. CSS lets us do this with [CSS animations](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations). The code to style the toast ends up looking like this:
 
@@ -364,7 +376,11 @@ And now you should see a toast appear in the bottom left corner with the text "C
 }
 ```
 
-Here we have a couple of new things.
+Here we have a couple of new things. We don't change the `.toast` class too much, but we add one line of code to it: `animation: slide-up 3s ease-in-out forwards`. This means that we want to run an animation called `slide-up` over 3 seconds. `ease-in-out` makes it a smooth animation, and `forwards` means that after the animation is done, the styles won't reset.
+
+The `slide-up` animation, in fact, is the new code. `@keyframes` refers to a CSS animation. Inside `slide-up`, we say that at 0%, the position of the toast should be -100 pixels from the bottom, which pretty much hides the toast. Then, at 20% - 90%, the toast will slide up to 2 pixels from the bottom. At 100%, the toast will return back to -100px, hiding it again.
+
+Okay, cool! A toast should pop up when you refresh the page.
 
 ### Front of the card
 
@@ -385,6 +401,7 @@ Inside `<div id="front">`, we create another `<div id="front-content">`, which h
 
 ```css
 #happy-holidays {
+    background-color: black;
     color: #fffaf4;
     font-family: "Staatliches", sans-serif;
     font-size: 4rem;
@@ -403,7 +420,14 @@ Inside `<div id="front">`, we create another `<div id="front-content">`, which h
 }
 ```
 
+We've used a lot of the same properties (e.g., `background-color` is a property), so hopefully most of this should make sense. We style `<div id="happy-holidays">` first, and then we style the `h1` and `h3` elements inside using `#happy-holidays h1, #happy-holidays h3 {...}`. There are a couple of new properties though:
+
+-   `text-transform: uppercase;` makes all the text uppercase.
+-   `line-height: 0.8;` makes the distance between lines of text smaller to 0.8.
+
 ### Make card flip when user clicks button
+
+Okay, before we start working on the back of the card, we need to actually get the card to flip. The first thing we'll do is style the card to get it to flip:
 
 ```css
 #card-inner {
@@ -435,6 +459,19 @@ Inside `<div id="front">`, we create another `<div id="front-content">`, which h
 }
 ```
 
+Okay, this is a lot to take in, so let's go through it slowly. First, we style `<div id="card-inner">`. We set `position: relative`, so that children inside can have a specific location where the top left corner is going to be the top left corner of the card instead of the screen. Then, we make sure that the width and height are 100%, we set `transition: transform 0.8s` so that the card takes 0.8 seconds to flip, and `transform-style: preserve-3d` so that only the card flips in the 3D space.
+
+The, we style the front and back of the cards with `#front` and `#back`. Both the front and back of the cards will have a background color of `#fffaf4`, and will have a `position` of `absolute`, meaning that it will start in the top left corner of the card. We also make sure that `width: 100%` and `height: 100%` so they take up the full size of the card. `z-index: 999` is used to make sure it goes above everything else (nothing will overlap with it). Finally, `backface-visibility` is set to `hidden` so that when the card is flipped, we won't see the other side.
+
+We also have a couple of styles specific to the back of the card.
+
+-   `display: flex;` and the styles inside `#back > div` divide the back of the card into two columns.
+    -   `flex-basis: 50%` is the size of each column: 50% of the total size
+    -   `overflow: auto` means that if the content overflows the card, the user can scroll to see the content.
+-   `transform: rotateY(180deg)` makes it so the back of the card isn't backwards. Think about it - if the card has two sides, one side would be backwards, so we have to rotate it by 180 degrees so it's not backwards anymore. Don't believe me? Try not using this line!
+
+Of course, we actually have to get the flip button to work. Here's how. Include this in the bottom of the code inside `window.onload` in `index.js`:
+
 ```js
 document.getElementById("flip-button").addEventListener("click", () => {
     if (
@@ -448,7 +485,13 @@ document.getElementById("flip-button").addEventListener("click", () => {
 });
 ```
 
+Here, we're adding adding a event listener to check when `<button id="flip-button">` is clicked. When it gets clicked, we check which side of the card we're on. If we're on the back side, that means we've flipped the card 180 degrees (`if document.getElementById9("card-inner").style.transform === "rotateY(180deg)"`), so we're going to reset that. Otherwise, we're going to flip the card 180 degrees. Using `rotateY` instead of `rotateX` or `rotate` makes it so that the card only rotates vertically.
+
+Okay, now the card can be flipped!
+
 ### Back of the card: Left side
+
+Now let's work on the back of the card. The first thing we'll do is the left side, which is where the warm, heartfelt text will be placed.
 
 ```html
 <div id="message">
@@ -487,6 +530,12 @@ document.getElementById("flip-button").addEventListener("click", () => {
 </div>
 ```
 
+_Yes, I have put some random text. We probably need to replace this with warm, heartfelt text. I probably will have an AI do this, lol._
+
+This belongs inside `<div id="back">`. Inside, we have an image (the Hack Club flag) inside a link (the `<a>` tag). This way, when the user clicks on the image, they'll be redirected to our Hack Club website. `target="_blank"` opens the website in a new tab.
+
+That was very easy. Here's the CSS to style the text:
+
 ```css
 #message .prose {
     font-family: "Inter Tight", sans-serif;
@@ -495,9 +544,22 @@ document.getElementById("flip-button").addEventListener("click", () => {
 }
 ```
 
+This simply styles the prose/text inside `<div id="message">`. The font we use is Inter Tight, with a font size of 1.5rem (`rem` is just another form of measurement; check the above sections for an explanation of what `rem` is). We also add padding to the text:
+
+-   No padding on top - `0rem`
+-   `3rem` of padding on the right
+-   `1rem` of padding on the bottom
+-   `3rem` of padding on the left
+
 ### Back of the card: Right side text
 
+If you look at the back of the card right now, it'll look a bit wierd, because there isn't a second column. To fix that, we'll add the second column now:
+
 ```html
+<div id="message">
+    <!-- Code from before -->
+    ...
+</div>
 <div id="info">
     <div id="signatures"></div>
     <div id="to">
@@ -511,6 +573,15 @@ document.getElementById("flip-button").addEventListener("click", () => {
     </div>
 </div>
 ```
+
+This time, the second column has `id="info"`. Inside, there are two `<div>`s:
+
+-   One with `id="signatures"`. This will hold the signatures later on.
+-   One with `id="to"`. This will be the "To: You!" text. Inside here, we have an `h1` tag, containing a `span` tag with a class of `.prefix`. A `span` tag essentially lets us add special classes, IDs, etc. to text inside text. This will be the prefix text, "TO:", which is smaller than the "You!" text.
+
+We also have four `<hr/>`s. `hr` is short for horizontal break and it's basically a line. This creates the illusion of an unfilled postcard, as you can see in the video.
+
+Okay, here are the styles:
 
 ```css
 #info {
@@ -550,19 +621,36 @@ document.getElementById("flip-button").addEventListener("click", () => {
 
 ### Back of the card: Signature form
 
-Okay, let's add the signature form after the "To: You" text. Here'
+Okay, let's add the signature form after the "To: You" text. Here's the HTML:
 
 ```html
-<form id="sign">
-    <input
-        autocomplete="off"
-        type="text"
-        name="name"
-        placeholder="Sign this card!"
-        required />
-    <button type="submit">Sign!</button>
-</form>
+<div id="info">
+    <!-- Code from before -->
+    <form id="sign">
+        <input
+            autocomplete="off"
+            type="text"
+            name="name"
+            placeholder="Sign this card!"
+            required />
+        <button type="submit">Sign!</button>
+    </form>
+</div>
 ```
+
+We use the `form` tag, which holds the choices in a form. Inside here, we have two elements:
+
+* An `input` element. This is the text box where the user will type in their name.
+    * `autocomplete="off"` turns off autocomplete
+    * `type="text"` makes this a text box. For example, you can use `type="password"` for a password box.
+    * `name="name"` is the name for this input box.
+    * `placeholder="Sign this card!"` is the placeholder for when the user hasn't typed anything yet
+    * `required` makes this input required, so the user can't turn it in if theyhaven't filled it out yet
+* A `button` element. This is the submit button.
+    * `type="submit"` turns this button into a submit button.
+
+Of course, we haven't done the styling yet, so this form doesn't look particularly great right now. Let's spruce up the styles:
+
 
 ```css
 #sign {
@@ -602,6 +690,18 @@ Okay, let's add the signature form after the "To: You" text. Here'
     cursor: pointer;
 }
 ```
+
+Here, we're styling the form, then the input inside the form (`#sign input`), and then the button inside the form (`#sign button`). Hopefully some of this looks familiar. When we style the form, we:
+
+* Add a border
+* Add a shadow
+* Add some padding
+* Change the font/font size
+* Use `display: flex` so that the input and button show up to next to each other instead of on separate rows. Then, we use `justify-content: space-between" so that the input and button are at separate ends of the form (there is space between them).
+
+When we style the input, we:
+
+* Revert the styles the browsers give `input`s. This involves removing the `border`, 
 
 ## Step Two
 
